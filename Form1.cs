@@ -26,7 +26,8 @@ namespace OopLab4
 
         }
 
-        public class MyStorage {
+        public class MyStorage
+        {
             private Obj[] storage;
             protected int iter;
             protected int size;
@@ -46,10 +47,10 @@ namespace OopLab4
 
             }
 
-            public void sizeImprove()
+            private void sizeImprove()
             {
                 Obj[] tempStorage = storage;
-                
+
 
                 size = size + 1;
 
@@ -57,7 +58,7 @@ namespace OopLab4
 
                 for (int i = 0; i < size - 1; i++)
                     storage[i] = tempStorage[i];
-                
+
                 storage[size - 1] = null;
 
             }
@@ -85,13 +86,12 @@ namespace OopLab4
                 }
                 count = count + 1;
             }
-            MyStorage()
+            public MyStorage()
             {
                 iter = 0;
                 count = 0;
                 size = 1;
-                for (int i = 0; i < size; i++)
-                    storage[i] = null;
+                storage = new Obj[size];
             }
         }
         public Form1()
