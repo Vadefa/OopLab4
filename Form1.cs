@@ -32,6 +32,59 @@ namespace OopLab4
             protected int size;
             protected int count;
 
+            private void shift()
+            {
+                Obj[] tempStorage = new Obj[size - iter + 1];      // we putting an element after the storage[iter] element
+                for (int i = iter + 1; i < size; i++)
+                    tempStorage[i - iter - 1] = storage[i];
+
+                sizeImprove();
+                storage[iter + 1] = null;                            // later we'll put a new element here
+
+                for (int i = iter + 2; i < size; i++)
+                    storage[i] = tempStorage[i - iter - 2];
+
+            }
+
+            public void sizeImprove()
+            {
+                Obj[] tempStorage = storage;
+                
+
+                size = size + 1;
+
+                storage = new Obj[size];
+
+                for (int i = 0; i < size - 1; i++)
+                    storage[i] = tempStorage[i];
+                
+                storage[size - 1] = null;
+
+            }
+            public void add(Obj obj)
+            {
+                if (iter < size)
+                {
+                    if (storage[iter] == null)
+                    {
+                        storage[iter] = obj;
+                        iter = iter + 1;
+                    }
+                    else
+                    {
+                        shift();
+                        iter = iter + 1;
+                        storage[iter] = obj;
+                    }
+                }
+                else if (iter == size)
+                {
+                    sizeImprove();
+                    storage[iter] = obj;
+                    iter = iter + 1;
+                }
+                count = count + 1;
+            }
             MyStorage()
             {
                 iter = 0;
