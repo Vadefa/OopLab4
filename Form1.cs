@@ -12,20 +12,18 @@ namespace OopLab4
 {
     public partial class Form1 : Form
     {
+     MyStorage storage;
         public Form1()
         {
             InitializeComponent();
 
-            public MyStorage storage = new MyStorage();
-        }
-        public class CCircle
+            storage = new MyStorage();
+    }
+    public class CCircle
         {
             private Rectangle rect;
             Graphics formGraphics;              // Graphics класс предоставляет методы для рисования объектов
             
-
-            private int x;
-            private int y;
             private int r = 40;
 
             public CCircle(int x, int y)
@@ -33,8 +31,7 @@ namespace OopLab4
                 Pen myPen = new Pen(Color.Aquamarine);
                 myPen.Width = 5;
 
-                rect = new Rectangle();
-                formGraphics.DrawEllipse(myPen, rect);
+                formGraphics.DrawEllipse(myPen, new Rectangle(x, y, r * 2, r * 2));
                 
             }
 
@@ -110,28 +107,27 @@ namespace OopLab4
         }
 
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            Pen myPen = new Pen(Color.Aquamarine);
-            myPen.Width = 5;
-            Graphics formGraphics;              // Graphics класс предоставляет методы для рисования объектов
-            formGraphics = CreateGraphics();
-            formGraphics.DrawEllipse(myPen, new Rectangle(0, 0, 200, 300));
-            
 
-            myPen.Dispose();                  // Dispose() - освобождение ресурсов
-            formGraphics.Dispose();
+
         }
 
         
         private void Form1_DoubleClick(object sender, EventArgs e)
         {
-            CCircle rect = new CCircle(Cursor.Position.X, Cursor.Position.Y);
+            Pen myPen = new Pen(Color.Aquamarine);
+            myPen.Width = 5;
+            Graphics formGraphics;              // Graphics класс предоставляет методы для рисования объектов
+            formGraphics = CreateGraphics();
+            formGraphics.DrawEllipse(myPen, new Rectangle(Cursor.Position.X, Cursor.Position.Y, 200, 300));
+
+            storage.add(formGraphics);
+            
+            myPen.Dispose();                  // Dispose() - освобождение ресурсов
+            formGraphics.Dispose();
         }
+
+
     }
 }
