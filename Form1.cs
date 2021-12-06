@@ -13,29 +13,25 @@ namespace OopLab4
     public partial class Form1 : Form
     {
 
-        public class Obj
+
+ 
+        public class CCircle
         {
-            public virtual void someMethod()
-            {
 
-            }
-            public virtual void name()
-            {
-
-            }
-
+            private int x;
+            private int y;
+            private int r;
         }
-
         public class MyStorage
         {
-            private Obj[] storage;
+            private object[] storage;
             protected int iter;
             protected int size;
             protected int count;
 
             private void shift()
             {
-                Obj[] tempStorage = new Obj[size - iter + 1];      // we putting an element after the storage[iter] element
+                object[] tempStorage = new object[size - iter + 1];      // we putting an element after the storage[iter] element
                 for (int i = iter + 1; i < size; i++)
                     tempStorage[i - iter - 1] = storage[i];
 
@@ -49,12 +45,12 @@ namespace OopLab4
 
             private void sizeImprove()
             {
-                Obj[] tempStorage = storage;
+                object[] tempStorage = storage;
 
 
                 size = size + 1;
 
-                storage = new Obj[size];
+                storage = new object[size];
 
                 for (int i = 0; i < size - 1; i++)
                     storage[i] = tempStorage[i];
@@ -62,7 +58,7 @@ namespace OopLab4
                 storage[size - 1] = null;
 
             }
-            public void add(Obj obj)
+            public void add(object obj)
             {
                 if (iter < size)
                 {
@@ -91,7 +87,7 @@ namespace OopLab4
                 iter = 0;
                 count = 0;
                 size = 1;
-                storage = new Obj[size];
+                storage = new object[size];
             }
         }
         public Form1()
