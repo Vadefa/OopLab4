@@ -13,25 +13,37 @@ namespace OopLab4
     public partial class Form1 : Form
     {
      MyStorage storage;
+     Graphics ellipses;                         // Graphics класс предоставляет методы для рисования объектов
         public Form1()
         {
             InitializeComponent();
+
+            ellipses = CreateGraphics();
 
             storage = new MyStorage();
     }
     public class CCircle
         {
             private Rectangle rect;
-            Graphics formGraphics;              // Graphics класс предоставляет методы для рисования объектов
-            
+            private int x;
+            private int y;
             private int r = 40;
 
-            public CCircle(int x, int y)
+            public CCircle(int x, int y, Graphics ellipses, MyStorage storage)
             {
+
                 Pen myPen = new Pen(Color.Aquamarine);
                 myPen.Width = 5;
 
-                formGraphics.DrawEllipse(myPen, new Rectangle(x, y, r * 2, r * 2));
+                this.x = x - r;
+                this.y = y - r - ((int)myPen.Width);
+
+                rect = new Rectangle(this.x, this.y, r * 2, r * 2);
+
+                ellipses.DrawRectangle(myPen, rect);
+                ellipses.DrawEllipse(myPen, rect);
+
+                storage.add(rect);
                 
             }
 
@@ -96,6 +108,15 @@ namespace OopLab4
                     iter = iter + 1;
                 }
                 count = count + 1;
+                
+            }
+            
+            public void paint()
+            {
+                foreach(object a in storage)
+                {
+                    //a.GetType()
+                }
             }
             public MyStorage()
             {
@@ -106,21 +127,28 @@ namespace OopLab4
             }
         }
 
-
-
         private void Form1_DoubleClick(object sender, EventArgs e)
         {
-            Pen myPen = new Pen(Color.Aquamarine);
-            myPen.Width = 5;
-            Graphics formGraphics;              // Graphics класс предоставляет методы для рисования объектов
-            formGraphics = CreateGraphics();
-
-            formGraphics.DrawEllipse(myPen, new Rectangle(Cursor.Position.X, Cursor.Position.Y, 200, 300));
-
-            storage.add(formGraphics);
+            CCircle circle = new CCircle(Cursor.Position.X, Cursor.Position.Y, ellipses, storage);
 
             //myPen.Dispose();                  // Dispose() - освобождение ресурсов
             //formGraphics.Dispose();
+        }
+
+        private void panel1_DoubleClick(object sender, EventArgs e)
+        {
+
+            CCircle circle = new CCircle(Cursor.Position.X, Cursor.Position.Y, ellipses, storage);
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void Form1_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }
