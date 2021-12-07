@@ -16,6 +16,8 @@ namespace OopLab4
         Graphics ellipses;                         // Graphics класс предоставляет методы для рисования объектов
         Graphics ellipses2;                        // An additional environment for painting
         bool environment;                          // False - > environment of drawing is ellipses. True -> ellipses2.
+
+        bool ctrl;
         public Form1()
         {
             InitializeComponent();
@@ -24,6 +26,8 @@ namespace OopLab4
             ellipses2 = CreateGraphics();
             environment = false;
             storage = new MyStorage();
+
+            ctrl = false;
     }
 
 
@@ -136,7 +140,7 @@ namespace OopLab4
 
                 ActiveForm.Invalidate();
             }
-            public void focusOnClick(Graphics ellipses, int x_mouse, int y_mouse)
+            public void focusOnClick(Graphics ellipses, int x_mouse, int y_mouse, bool ctrl)
             {
 
                 int i = size;
@@ -149,8 +153,9 @@ namespace OopLab4
                 
                 if (found == true)
                 {
-                    foreach (CCircle circle in storage)
-                        circle.unfocus();
+                    if (ctrl == false)
+                        foreach (CCircle circle in storage)
+                            circle.unfocus();
 
                     storage[i].focus();
                 }
@@ -253,6 +258,7 @@ namespace OopLab4
                     storage.paint(ellipses2);
         }
 
+
         private void Form1_MouseClick(object sender, MouseEventArgs e)
         {
             if (storage.getCount() != 0)
@@ -260,9 +266,10 @@ namespace OopLab4
                 Point mousePos = PointToClient(new Point(Cursor.Position.X, Cursor.Position.Y));
 
                 if (environment == false)
-                    storage.focusOnClick(ellipses, mousePos.X, mousePos.Y);
+                    storage.focusOnClick(ellipses, mousePos.X, mousePos.Y, ctrl);
                 else
-                    storage.focusOnClick(ellipses2, mousePos.X, mousePos.Y);
+                    storage.focusOnClick(ellipses2, mousePos.X, mousePos.Y, ctrl);
+
             }
         }
 
@@ -287,5 +294,6 @@ namespace OopLab4
             }
 
         }
+
     }
 }
