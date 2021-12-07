@@ -107,14 +107,8 @@ namespace OopLab4
         }
 
 
-        private void Form1_Paint(object sender, PaintEventArgs e)
-        {
 
-
-        }
-
-        
-        private void Form1_DoubleClick(object sender, EventArgs e)
+        private void panel1_DoubleClick(object sender, EventArgs e)
         {
             Pen myPen = new Pen(Color.Aquamarine);
             myPen.Width = 5;
@@ -123,11 +117,9 @@ namespace OopLab4
             formGraphics.DrawEllipse(myPen, new Rectangle(Cursor.Position.X, Cursor.Position.Y, 200, 300));
 
             storage.add(formGraphics);
-            
-            myPen.Dispose();                  // Dispose() - освобождение ресурсов
-            formGraphics.Dispose();
+
+            //myPen.Dispose();                  // Dispose() - освобождение ресурсов
+            //formGraphics.Dispose();
         }
-
-
     }
 }
