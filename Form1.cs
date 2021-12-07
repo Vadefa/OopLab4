@@ -42,20 +42,8 @@ namespace OopLab4
             Pen defaultPen = new Pen(Color.Blue, 6);
             Pen focusedPen = new Pen(Color.Violet, 6);
 
-            public bool checkUnderMouse(Graphics ellipses, int x_mouse, int y_mouse)
-            {
-                int x0 = x;
-                int y0 = y;
 
-                int x1 = x + r * 2 + ((int)defaultPen.Width);
-                int y1 = y + r * 2 + ((int)defaultPen.Width);
-
-                if ((x_mouse > x0) && (x_mouse < x1) && (y_mouse > y0) && (y_mouse < y1))
-                    return true;
-                else
-                    return false;
-            }
-
+            //drawing method
             public void paint(Graphics ellipses)
             {
                 if (this.is_focused == true)
@@ -64,6 +52,8 @@ namespace OopLab4
                     ellipses.DrawEllipse(defaultPen, rect);
             }
 
+
+            // focus
             public bool focusCheck()
             {
                 if (is_focused == true)
@@ -81,6 +71,23 @@ namespace OopLab4
                 is_focused = false;
                 ActiveForm.Invalidate();
             }
+
+
+            // something with coordinates
+            public bool checkUnderMouse(Graphics ellipses, int x_mouse, int y_mouse)
+            {
+                int x0 = x;
+                int y0 = y;
+
+                int x1 = x + r * 2 + ((int)defaultPen.Width);
+                int y1 = y + r * 2 + ((int)defaultPen.Width);
+
+                if ((x_mouse > x0) && (x_mouse < x1) && (y_mouse > y0) && (y_mouse < y1))
+                    return true;
+                else
+                    return false;
+            }
+
             public CCircle(int x, int y, Graphics ellipses)
             {
                 this.x = x - r - ((int)focusedPen.Width / 2);
@@ -101,6 +108,7 @@ namespace OopLab4
             protected int size;
             protected int count;
 
+
             public void removeFocused(Graphics deleting, Graphics inserting)
             {
                 int del = 0;                                // number of elements we'll delete
@@ -111,6 +119,7 @@ namespace OopLab4
                     else
                         storage[i] = null;                  // placing null in the storage items for the deleting elements
                 }
+
 
                 CCircle[] tempStorage = new CCircle[del];   // here we'll put elements that should remain
 
@@ -123,20 +132,24 @@ namespace OopLab4
                         j = j + 1;
                     }
 
-                count = size - (size - del);
+
+                count = size - (size - del);                // changing properties
                 size = del;
                 iter = size - 1;
                 if (iter < 0)
                     iter = 0;
 
+
                 storage = new CCircle[size];
                 for (int i = 0; i < size; i++)
                     storage[i] = tempStorage[i];            // moved all remained elements
 
+
                 deleting.Dispose();                         // now our previous elements will not be repainted
 
-                for (int i = 0; i < size; i++)
-                    storage[i].paint(inserting);
+
+                //for (int i = 0; i < size; i++)
+                //    storage[i].paint(inserting);
 
                 ActiveForm.Invalidate();
             }
@@ -239,6 +252,17 @@ namespace OopLab4
             }
         }
 
+
+
+        private void Form1_Paint(object sender, PaintEventArgs e)
+        {
+            if (storage.getCount() != 0)
+                if (environment == false)
+                    storage.paint(ellipses);
+                else
+                    storage.paint(ellipses2);
+        }
+
         private void Form1_DoubleClick(object sender, EventArgs e)
         {
             //PointToClient returns mouse position in relation to the form, not to the screen
@@ -249,14 +273,6 @@ namespace OopLab4
             else
                 storage.add(new CCircle(mousePos.X, mousePos.Y, ellipses2), ellipses2);
 
-        }
-        private void Form1_Paint(object sender, PaintEventArgs e)
-        {
-            if (storage.getCount() != 0)
-                if (environment == false)
-                    storage.paint(ellipses);
-                else
-                    storage.paint(ellipses2);
         }
 
 
