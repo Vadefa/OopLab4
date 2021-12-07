@@ -21,6 +21,8 @@ namespace OopLab4
             ellipses = CreateGraphics();
             storage = new MyStorage();
     }
+
+
     public class CCircle
         {
             private Rectangle rect;
@@ -31,6 +33,12 @@ namespace OopLab4
 
             Pen defaultPen = new Pen(Color.Blue, 5);
             Pen focusedPen = new Pen(Color.Violet, 5);
+
+
+            public void checkUnderMouse(Graphics ellipses, int x_mouse, int y_mouse)
+            {
+
+            }
 
             public void paint(Graphics ellipses)
             {
@@ -43,7 +51,6 @@ namespace OopLab4
             public void clear(Graphics ellipses)
             {
                 ellipses.Dispose();
-            
             }
 
             public void focus()
@@ -76,6 +83,11 @@ namespace OopLab4
             protected int size;
             protected int count;
 
+            public void focusOnClick(Graphics ellipses, int x_mouse, int y_mouse)
+            {
+                int i = size - 1;
+
+            }
             public void paint(Graphics ellipses)
             {
                 foreach (CCircle circle in storage)
@@ -165,13 +177,18 @@ namespace OopLab4
 
 
         }
-
-
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
             if (storage.getCount() != 0)
                 storage.paint(ellipses);
+        }
+
+        private void Form1_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (storage.getCount() != 0)
+                storage.focusOnClick(ellipses, Cursor.Position.X, Cursor.Position.Y);
 
         }
+
     }
 }
