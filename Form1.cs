@@ -14,8 +14,6 @@ namespace OopLab4
     {
         MyStorage storage;
         Graphics ellipses;                         // Graphics класс предоставляет методы для рисования объектов
-        Graphics ellipses2;                        // An additional environment for painting
-        bool environment;                          // False - > environment of drawing is ellipses. True -> ellipses2.
 
         bool ctrl;
         public Form1()
@@ -23,8 +21,6 @@ namespace OopLab4
             InitializeComponent();
 
             ellipses = CreateGraphics();
-            ellipses2 = CreateGraphics();
-            environment = false;
             storage = new MyStorage();
 
             ctrl = false;
@@ -79,8 +75,8 @@ namespace OopLab4
                 int x0 = x;
                 int y0 = y;
 
-                int x1 = x + r * 2 + ((int)defaultPen.Width);
-                int y1 = y + r * 2 + ((int)defaultPen.Width);
+                int x1 = x + r * 2 + ((int)(defaultPen.Width / 2));
+                int y1 = y + r * 2 + ((int)(defaultPen.Width / 2));
 
                 if ((x_mouse > x0) && (x_mouse < x1) && (y_mouse > y0) && (y_mouse < y1))
                     return true;
@@ -90,8 +86,8 @@ namespace OopLab4
 
             public CCircle(int x, int y, Graphics ellipses)
             {
-                this.x = x - r - ((int)focusedPen.Width / 2);
-                this.y = y - r - ((int)focusedPen.Width / 2);
+                this.x = x - r - ((int)(focusedPen.Width / 2));
+                this.y = y - r - ((int)(focusedPen.Width / 2));
                 is_focused = true;
                 rect = new Rectangle(this.x, this.y, r * 2, r * 2);
 
@@ -109,7 +105,7 @@ namespace OopLab4
             protected int count;
 
 
-            public void removeFocused(Graphics deleting, Graphics inserting)
+            public void removeFocused(Graphics ellipses)
             {
                 int del = 0;                                // number of elements we'll delete
                 for (int i = 0; i < size; i++)              
@@ -117,7 +113,7 @@ namespace OopLab4
                     if (storage[i].focusCheck() != true)
                         del = del + 1;
                     else
-                        storage[i] = null;                  // placing null in the storage items for the deleting elements
+                        storage[i] = null;                  // placing null in the storage at the elements we should delete
                 }
 
 
@@ -128,7 +124,7 @@ namespace OopLab4
                 for (int i = 0; i < size; i++)
                     if(storage[i] != null)
                     {
-                        tempStorage[j] = storage[i];        // put remaining elements
+                        tempStorage[j] = storage[i];        // putting remaining elements
                         j = j + 1;
                     }
 
@@ -144,9 +140,7 @@ namespace OopLab4
                     storage[i] = tempStorage[i];            // moved all remained elements
 
 
-                deleting.Dispose();                         // now our previous elements will not be repainted
-
-
+                //now at the form's paint event we won't draw elements those were focused. Let's make the form repaint it immediately.
                 ActiveForm.Invalidate();
             }
             public void focusOnClick(Graphics ellipses, int x_mouse, int y_mouse, bool ctrl)
@@ -228,31 +222,23 @@ namespace OopLab4
                 storage = new CCircle[size];
             }
         }
+        // ended up for the storage and ccircle
 
 
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
             ellipses = CreateGraphics();
-            ellipses2 = CreateGraphics();
 
             if (storage.getCount() != 0)
-                if (environment == false)
-                    storage.paint(ellipses);
-                else
-                    storage.paint(ellipses2);
+                storage.paint(ellipses);
         }
 
         private void Form1_DoubleClick(object sender, EventArgs e)
         {
             //PointToClient returns mouse position in relation to the form, not to the screen
             Point mousePos = PointToClient(new Point(Cursor.Position.X, Cursor.Position.Y));
-
-            if (environment == false)
-                storage.add(new CCircle(mousePos.X, mousePos.Y, ellipses), ellipses);
-            else
-                storage.add(new CCircle(mousePos.X, mousePos.Y, ellipses2), ellipses2);
-
+            storage.add(new CCircle(mousePos.X, mousePos.Y, ellipses), ellipses);
         }
 
 
@@ -261,28 +247,15 @@ namespace OopLab4
             if (storage.getCount() != 0)
             {
                 Point mousePos = PointToClient(new Point(Cursor.Position.X, Cursor.Position.Y));
-
-                if (environment == false)
-                    storage.focusOnClick(ellipses, mousePos.X, mousePos.Y, ctrl);
-                else
-                    storage.focusOnClick(ellipses2, mousePos.X, mousePos.Y, ctrl);
-
+                storage.focusOnClick(ellipses, mousePos.X, mousePos.Y, ctrl);
             }
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
-            {
-                if (environment == false)
-                    storage.removeFocused(ellipses, ellipses2);
-                else
-                    storage.removeFocused(ellipses2, ellipses);
-                if (environment == false)
-                    environment = true;
-                else
-                    environment = false;
-            }
+                storage.removeFocused(ellipses);
+
             if (e.KeyCode == Keys.ControlKey)
                 ctrl = true;
 
