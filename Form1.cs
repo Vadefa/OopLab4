@@ -21,8 +21,9 @@ namespace OopLab4
             InitializeComponent();
 
             ellipses = CreateGraphics();
-            storage = new MyStorage();
+            ellipses2 = CreateGraphics();
             environment = false;
+            storage = new MyStorage();
     }
 
 
@@ -37,15 +38,6 @@ namespace OopLab4
             Pen defaultPen = new Pen(Color.Blue, 6);
             Pen focusedPen = new Pen(Color.Violet, 6);
 
-            public void repainting(Graphics ellipses)
-            {
-
-            }
-            public void clear(Graphics ellipses)
-            {
-
-
-            }
             public bool checkUnderMouse(Graphics ellipses, int x_mouse, int y_mouse)
             {
                 int x0 = x;
@@ -107,13 +99,42 @@ namespace OopLab4
 
             public void removeFocused(Graphics deleting, Graphics inserting)
             {
-                for (int i = 0; i < size; i++)
+                int del = 0;                                // number of elements we'll delete
+                for (int i = 0; i < size; i++)              
                 {
-                    if (storage[i].focusCheck() == true)
-                    {
-                           
-                    }
+                    if (storage[i].focusCheck() != true)
+                        del = del + 1;
+                    else
+                        storage[i] = null;                  // placing null in the storage items for the deleting elements
                 }
+
+                CCircle[] tempStorage = new CCircle[del];   // here we'll put elements that should remain
+
+
+                int j = 0;
+                for (int i = 0; i < size; i++)
+                    if(storage[i] != null)
+                    {
+                        tempStorage[j] = storage[i];        // put remaining elements
+                        j = j + 1;
+                    }
+
+                count = size - (size - del);
+                size = del;
+                iter = size - 1;
+                if (iter < 0)
+                    iter = 0;
+
+                storage = new CCircle[size];
+                for (int i = 0; i < size; i++)
+                    storage[i] = tempStorage[i];            // moved all remained elements
+
+                deleting.Dispose();                         // now our previous elements will not be repainted
+
+                for (int i = 0; i < size; i++)
+                    storage[i].paint(inserting);
+
+                ActiveForm.Invalidate();
             }
             public void focusOnClick(Graphics ellipses, int x_mouse, int y_mouse)
             {
@@ -145,22 +166,6 @@ namespace OopLab4
                 return count;
             }
             
-            private void remove(int iter)
-            {
-                CCircle[] tempStorage = new CCircle[size - iter];      // we putting an element after the storage[iter] element
-                for (int i = 0; i < iter; i++)
-                    tempStorage[i] = storage[i];
-
-
-
-                for (int i = iter; i < size; i++)
-                    tempStorage[i - 1] = storage[i];
-
-                
-
-                for (int i = iter + 2; i < size; i++)
-                    storage[i] = tempStorage[i - iter - 2];
-            }
             private void shift()
             {
                 CCircle[] tempStorage = new CCircle[size - iter + 1];      // we putting an element after the storage[iter] element
@@ -228,22 +233,24 @@ namespace OopLab4
             }
         }
 
-        private void GetMousePosition(object sender, MouseEventArgs e)
-        {
-
-        }
         private void Form1_DoubleClick(object sender, EventArgs e)
         {
             //PointToClient returns mouse position in relation to the form, not to the screen
-            Point mousePos = PointToClient(new Point(Cursor.Position.X, Cursor.Position.Y));        
-            storage.add(new CCircle(mousePos.X, mousePos.Y, ellipses), ellipses);
+            Point mousePos = PointToClient(new Point(Cursor.Position.X, Cursor.Position.Y));
 
+            if (environment == false)
+                storage.add(new CCircle(mousePos.X, mousePos.Y, ellipses), ellipses);
+            else
+                storage.add(new CCircle(mousePos.X, mousePos.Y, ellipses2), ellipses2);
 
         }
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
             if (storage.getCount() != 0)
-                storage.paint(ellipses);
+                if (environment == false)
+                    storage.paint(ellipses);
+                else
+                    storage.paint(ellipses2);
         }
 
         private void Form1_MouseClick(object sender, MouseEventArgs e)
@@ -251,14 +258,33 @@ namespace OopLab4
             if (storage.getCount() != 0)
             {
                 Point mousePos = PointToClient(new Point(Cursor.Position.X, Cursor.Position.Y));
-                storage.focusOnClick(ellipses, mousePos.X, mousePos.Y);
+
+                if (environment == false)
+                    storage.focusOnClick(ellipses, mousePos.X, mousePos.Y);
+                else
+                    storage.focusOnClick(ellipses2, mousePos.X, mousePos.Y);
             }
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
-                storage.removeFocused(ellipses);
+            {
+                if (environment == false)
+                {
+                    storage.removeFocused(ellipses, ellipses2);
+                    ellipses = CreateGraphics();
+                }
+                else
+                {
+                    storage.removeFocused(ellipses2, ellipses);
+                    ellipses2 = CreateGraphics();
+                }
+                if (environment == false)
+                    environment = true;
+                else
+                    environment = false;
+            }
         }
     }
 }
