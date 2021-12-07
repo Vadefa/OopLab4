@@ -132,10 +132,9 @@ namespace OopLab4
                         j = j + 1;
                     }
 
-
-                count = size - (size - del);                // changing properties
-                size = del;
-                iter = size - 1;
+                size = del;                                 // changing properties
+                count = size;
+                iter = size;
                 if (iter < 0)
                     iter = 0;
 
@@ -172,6 +171,7 @@ namespace OopLab4
                 }
 
             }
+
             public void paint(Graphics ellipses)
             {
                 foreach (CCircle circle in storage)
@@ -182,20 +182,6 @@ namespace OopLab4
                 return count;
             }
             
-            private void shift()
-            {
-                CCircle[] tempStorage = new CCircle[size - iter + 1];      // we putting an element after the storage[iter] element
-                for (int i = iter + 1; i < size; i++)
-                    tempStorage[i - iter - 1] = storage[i];
-
-                sizeImprove();
-                storage[iter + 1] = null;                            // later we'll put a new element here
-
-                for (int i = iter + 2; i < size; i++)
-                    storage[i] = tempStorage[i - iter - 2];
-
-            }
-
             private void sizeImprove()
             {
                 CCircle[] tempStorage = storage;
@@ -224,12 +210,6 @@ namespace OopLab4
                     {
                         storage[iter] = circle;
                         iter = iter + 1;
-                    }
-                    else
-                    {
-                        shift();
-                        iter = iter + 1;
-                        storage[iter] = circle;
                     }
                 }
                 else if (iter == size)
