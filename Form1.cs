@@ -35,9 +35,18 @@ namespace OopLab4
             Pen focusedPen = new Pen(Color.Violet, 5);
 
 
-            public void checkUnderMouse(Graphics ellipses, int x_mouse, int y_mouse)
+            public bool checkUnderMouse(Graphics ellipses, int x_mouse, int y_mouse)
             {
+                int x0 = x + r;
+                int y0 = y + r;
 
+                int x1 = x - r;
+                int y1 = y - r;
+
+                if ((x_mouse < x0) && (x_mouse > x1) && (y_mouse < y0) && (y_mouse > y1))
+                    return true;
+                else
+                    return false;
             }
 
             public void paint(Graphics ellipses)
@@ -85,7 +94,22 @@ namespace OopLab4
 
             public void focusOnClick(Graphics ellipses, int x_mouse, int y_mouse)
             {
-                int i = size - 1;
+
+                int i = size;
+                bool found = false;
+                while ((found == false) && (i > 0))
+                {
+                    i = i - 1;
+                    found = storage[i].checkUnderMouse(ellipses, x_mouse, y_mouse);
+                }
+                
+                if (found == true)
+                {
+                    foreach (CCircle circle in storage)
+                        circle.unfocus();
+
+                    storage[i].focus();
+                }
 
             }
             public void paint(Graphics ellipses)
@@ -170,7 +194,9 @@ namespace OopLab4
         }
         private void Form1_DoubleClick(object sender, EventArgs e)
         {
-            storage.add(new CCircle(Cursor.Position.X, Cursor.Position.Y, ellipses), ellipses);
+            //PointToClient returns mouse position in relation to the form, not to the screen
+            Point mousePos = PointToClient(new Point(Cursor.Position.X, Cursor.Position.Y));        
+            storage.add(new CCircle(mousePos.X, mousePos.Y, ellipses), ellipses);
 
             int p = MousePosition.X;
             int t = Cursor.Position.X;
