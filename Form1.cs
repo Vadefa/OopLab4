@@ -108,12 +108,13 @@ namespace OopLab4
 
 
 
-        private void panel1_DoubleClick(object sender, EventArgs e)
+        private void Form1_DoubleClick(object sender, EventArgs e)
         {
             Pen myPen = new Pen(Color.Aquamarine);
             myPen.Width = 5;
             Graphics formGraphics;              // Graphics класс предоставляет методы для рисования объектов
             formGraphics = CreateGraphics();
+
             formGraphics.DrawEllipse(myPen, new Rectangle(Cursor.Position.X, Cursor.Position.Y, 200, 300));
 
             storage.add(formGraphics);
