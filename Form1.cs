@@ -21,6 +21,7 @@ namespace OopLab4
             ellipses = CreateGraphics();
 
             storage = new MyStorage();
+            storage.observer += System.Windows.Forms.PaintEventHandler(this.Form1_Paint);
     }
     public class CCircle
         {
@@ -29,36 +30,51 @@ namespace OopLab4
             private int y;
             private int r = 40;
 
-            public CCircle(int x, int y, Graphics ellipses, MyStorage storage)
+            Pen defaultPen = new Pen(Color.Blue, 5);
+            Pen focusedPen = new Pen(Color.Violet, 5);
+
+            public void paint(Graphics ellipses)
             {
+                ellipses.DrawEllipse(focusedPen, rect);   
+            }
 
-                Pen myPen = new Pen(Color.Aquamarine);
-                myPen.Width = 5;
-
+            public void clear(Graphics ellipses)
+            {
+                ellipses.Dispose();
+            }
+            public CCircle(int x, int y)
+            {
                 this.x = x - r;
-                this.y = y - r - ((int)myPen.Width);
-
+                this.y = y - r;
                 rect = new Rectangle(this.x, this.y, r * 2, r * 2);
-
-                ellipses.DrawRectangle(myPen, rect);
-                ellipses.DrawEllipse(myPen, rect);
-
-                storage.add(rect);
-                
+         
             }
 
 
         }
+
         public class MyStorage
         {
-            private object[] storage;
+            private CCircle[] storage;
             protected int iter;
             protected int size;
             protected int count;
 
+            public PaintEventHandler observer;
+
+            public int getCount()
+            {
+                return count;
+            }
+            
+            public void paint(Graphics ellipses)
+            {
+                foreach (CCircle circle in storage)
+                    circle.paint(ellipses);
+            }
             private void shift()
             {
-                object[] tempStorage = new object[size - iter + 1];      // we putting an element after the storage[iter] element
+                CCircle[] tempStorage = new CCircle[size - iter + 1];      // we putting an element after the storage[iter] element
                 for (int i = iter + 1; i < size; i++)
                     tempStorage[i - iter - 1] = storage[i];
 
@@ -72,12 +88,12 @@ namespace OopLab4
 
             private void sizeImprove()
             {
-                object[] tempStorage = storage;
+                CCircle[] tempStorage = storage;
 
 
                 size = size + 1;
 
-                storage = new object[size];
+                storage = new CCircle[size];
 
                 for (int i = 0; i < size - 1; i++)
                     storage[i] = tempStorage[i];
@@ -85,70 +101,56 @@ namespace OopLab4
                 storage[size - 1] = null;
 
             }
-            public void add(object obj)
+
+            public void add(CCircle circle, Graphics ellipses)
             {
                 if (iter < size)
                 {
                     if (storage[iter] == null)
                     {
-                        storage[iter] = obj;
+                        storage[iter] = circle;
                         iter = iter + 1;
                     }
                     else
                     {
                         shift();
                         iter = iter + 1;
-                        storage[iter] = obj;
+                        storage[iter] = circle;
                     }
                 }
                 else if (iter == size)
                 {
                     sizeImprove();
-                    storage[iter] = obj;
+                    storage[iter] = circle;
                     iter = iter + 1;
                 }
                 count = count + 1;
-                
-            }
-            
-            public void paint()
-            {
-                foreach(object a in storage)
-                {
-                    //a.GetType()
-                }
+
+
+                observer.Invoke(this, null);
             }
             public MyStorage()
             {
                 iter = 0;
                 count = 0;
                 size = 1;
-                storage = new object[size];
+                storage = new CCircle[size];
             }
         }
 
         private void Form1_DoubleClick(object sender, EventArgs e)
         {
-            CCircle circle = new CCircle(Cursor.Position.X, Cursor.Position.Y, ellipses, storage);
+            storage.add(new CCircle(Cursor.Position.X, Cursor.Position.Y), ellipses);
 
             //myPen.Dispose();                  // Dispose() - освобождение ресурсов
             //formGraphics.Dispose();
         }
 
-        private void panel1_DoubleClick(object sender, EventArgs e)
-        {
-
-            CCircle circle = new CCircle(Cursor.Position.X, Cursor.Position.Y, ellipses, storage);
-        }
-
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-
+            if (storage.getCount() != 0)
+                storage.paint(ellipses);
         }
     }
 }
