@@ -151,6 +151,7 @@ namespace OopLab4
                     found = storage[i].checkUnderMouse(ellipses, x_mouse, y_mouse);
                 }
                 
+
                 if (found == true)
                 {
                     if (ctrl == false)
@@ -292,8 +293,15 @@ namespace OopLab4
                 else
                     environment = false;
             }
+            if (e.KeyCode == Keys.ControlKey)
+                ctrl = true;
 
         }
 
+        private void Form1_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.ControlKey)
+                ctrl = false;
+        }
     }
 }
