@@ -12,14 +12,17 @@ namespace OopLab4
 {
     public partial class Form1 : Form
     {
-     MyStorage storage;
-     Graphics ellipses;                         // Graphics класс предоставляет методы для рисования объектов
+        MyStorage storage;
+        Graphics ellipses;                         // Graphics класс предоставляет методы для рисования объектов
+        Graphics ellipses2;                        // An additional environment for painting
+        bool environment;                          // False - > environment of drawing is ellipses. True -> ellipses2.
         public Form1()
         {
             InitializeComponent();
 
             ellipses = CreateGraphics();
             storage = new MyStorage();
+            environment = false;
     }
 
 
@@ -34,7 +37,15 @@ namespace OopLab4
             Pen defaultPen = new Pen(Color.Blue, 6);
             Pen focusedPen = new Pen(Color.Violet, 6);
 
+            public void repainting(Graphics ellipses)
+            {
 
+            }
+            public void clear(Graphics ellipses)
+            {
+
+
+            }
             public bool checkUnderMouse(Graphics ellipses, int x_mouse, int y_mouse)
             {
                 int x0 = x;
@@ -57,11 +68,13 @@ namespace OopLab4
                     ellipses.DrawEllipse(defaultPen, rect);
             }
 
-            public void clear(Graphics ellipses)
+            public bool focusCheck()
             {
-                ellipses.Dispose();
+                if (is_focused == true)
+                    return true;
+                else
+                    return false;
             }
-
             public void focus()
             {
                 is_focused = true;
@@ -81,9 +94,9 @@ namespace OopLab4
 
                 ellipses.DrawEllipse(focusedPen, rect);
             }
-
-
         }
+
+
 
         public class MyStorage
         {
@@ -92,6 +105,16 @@ namespace OopLab4
             protected int size;
             protected int count;
 
+            public void removeFocused(Graphics deleting, Graphics inserting)
+            {
+                for (int i = 0; i < size; i++)
+                {
+                    if (storage[i].focusCheck() == true)
+                    {
+                           
+                    }
+                }
+            }
             public void focusOnClick(Graphics ellipses, int x_mouse, int y_mouse)
             {
 
@@ -120,6 +143,23 @@ namespace OopLab4
             public int getCount()
             {
                 return count;
+            }
+            
+            private void remove(int iter)
+            {
+                CCircle[] tempStorage = new CCircle[size - iter];      // we putting an element after the storage[iter] element
+                for (int i = 0; i < iter; i++)
+                    tempStorage[i] = storage[i];
+
+
+
+                for (int i = iter; i < size; i++)
+                    tempStorage[i - 1] = storage[i];
+
+                
+
+                for (int i = iter + 2; i < size; i++)
+                    storage[i] = tempStorage[i - iter - 2];
             }
             private void shift()
             {
@@ -215,5 +255,10 @@ namespace OopLab4
             }
         }
 
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+                storage.removeFocused(ellipses);
+        }
     }
 }
