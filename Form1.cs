@@ -31,19 +31,19 @@ namespace OopLab4
             private int r = 40;
             private bool is_focused;
 
-            Pen defaultPen = new Pen(Color.Blue, 5);
-            Pen focusedPen = new Pen(Color.Violet, 5);
+            Pen defaultPen = new Pen(Color.Blue, 6);
+            Pen focusedPen = new Pen(Color.Violet, 6);
 
 
             public bool checkUnderMouse(Graphics ellipses, int x_mouse, int y_mouse)
             {
-                int x0 = x + r;
-                int y0 = y + r;
+                int x0 = x;
+                int y0 = y;
 
-                int x1 = x - r;
-                int y1 = y - r;
+                int x1 = x + r * 2 + ((int)defaultPen.Width);
+                int y1 = y + r * 2 + ((int)defaultPen.Width);
 
-                if ((x_mouse < x0) && (x_mouse > x1) && (y_mouse < y0) && (y_mouse > y1))
+                if ((x_mouse > x0) && (x_mouse < x1) && (y_mouse > y0) && (y_mouse < y1))
                     return true;
                 else
                     return false;
@@ -74,8 +74,8 @@ namespace OopLab4
             }
             public CCircle(int x, int y, Graphics ellipses)
             {
-                this.x = x - r;
-                this.y = y - r;
+                this.x = x - r - ((int)focusedPen.Width / 2);
+                this.y = y - r - ((int)focusedPen.Width / 2);
                 is_focused = true;
                 rect = new Rectangle(this.x, this.y, r * 2, r * 2);
 
@@ -198,9 +198,6 @@ namespace OopLab4
             Point mousePos = PointToClient(new Point(Cursor.Position.X, Cursor.Position.Y));        
             storage.add(new CCircle(mousePos.X, mousePos.Y, ellipses), ellipses);
 
-            int p = MousePosition.X;
-            int t = Cursor.Position.X;
-
 
         }
         private void Form1_Paint(object sender, PaintEventArgs e)
@@ -212,8 +209,10 @@ namespace OopLab4
         private void Form1_MouseClick(object sender, MouseEventArgs e)
         {
             if (storage.getCount() != 0)
-                storage.focusOnClick(ellipses, Cursor.Position.X, Cursor.Position.Y);
-
+            {
+                Point mousePos = PointToClient(new Point(Cursor.Position.X, Cursor.Position.Y));
+                storage.focusOnClick(ellipses, mousePos.X, mousePos.Y);
+            }
         }
 
     }
