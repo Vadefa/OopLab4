@@ -19,9 +19,7 @@ namespace OopLab4
             InitializeComponent();
 
             ellipses = CreateGraphics();
-
             storage = new MyStorage();
-            storage.observer += System.Windows.Forms.PaintEventHandler(this.Form1_Paint);
     }
     public class CCircle
         {
@@ -29,25 +27,43 @@ namespace OopLab4
             private int x;
             private int y;
             private int r = 40;
+            private bool is_focused;
 
             Pen defaultPen = new Pen(Color.Blue, 5);
             Pen focusedPen = new Pen(Color.Violet, 5);
 
             public void paint(Graphics ellipses)
             {
-                ellipses.DrawEllipse(focusedPen, rect);   
+                if (this.is_focused == true)
+                    ellipses.DrawEllipse(focusedPen, rect);
+                else
+                    ellipses.DrawEllipse(defaultPen, rect);
             }
 
             public void clear(Graphics ellipses)
             {
                 ellipses.Dispose();
+            
             }
-            public CCircle(int x, int y)
+
+            public void focus()
+            {
+                is_focused = true;
+                ActiveForm.Invalidate();
+            }
+            public void unfocus()
+            {
+                is_focused = false;
+                ActiveForm.Invalidate();
+            }
+            public CCircle(int x, int y, Graphics ellipses)
             {
                 this.x = x - r;
                 this.y = y - r;
+                is_focused = true;
                 rect = new Rectangle(this.x, this.y, r * 2, r * 2);
-         
+
+                ellipses.DrawEllipse(focusedPen, rect);
             }
 
 
@@ -60,17 +76,14 @@ namespace OopLab4
             protected int size;
             protected int count;
 
-            public PaintEventHandler observer;
-
-            public int getCount()
-            {
-                return count;
-            }
-            
             public void paint(Graphics ellipses)
             {
                 foreach (CCircle circle in storage)
                     circle.paint(ellipses);
+            }
+            public int getCount()
+            {
+                return count;
             }
             private void shift()
             {
@@ -104,6 +117,10 @@ namespace OopLab4
 
             public void add(CCircle circle, Graphics ellipses)
             {
+                if (count != 0)
+                    foreach (CCircle c in storage)
+                        c.unfocus();
+
                 if (iter < size)
                 {
                     if (storage[iter] == null)
@@ -125,9 +142,6 @@ namespace OopLab4
                     iter = iter + 1;
                 }
                 count = count + 1;
-
-
-                observer.Invoke(this, null);
             }
             public MyStorage()
             {
@@ -138,12 +152,18 @@ namespace OopLab4
             }
         }
 
+        private void GetMousePosition(object sender, MouseEventArgs e)
+        {
+
+        }
         private void Form1_DoubleClick(object sender, EventArgs e)
         {
-            storage.add(new CCircle(Cursor.Position.X, Cursor.Position.Y), ellipses);
+            storage.add(new CCircle(Cursor.Position.X, Cursor.Position.Y, ellipses), ellipses);
 
-            //myPen.Dispose();                  // Dispose() - освобождение ресурсов
-            //formGraphics.Dispose();
+            int p = MousePosition.X;
+            int t = Cursor.Position.X;
+
+
         }
 
 
@@ -151,6 +171,7 @@ namespace OopLab4
         {
             if (storage.getCount() != 0)
                 storage.paint(ellipses);
+
         }
     }
 }
