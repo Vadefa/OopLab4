@@ -148,9 +148,6 @@ namespace OopLab4
                 deleting.Dispose();                         // now our previous elements will not be repainted
 
 
-                //for (int i = 0; i < size; i++)
-                //    storage[i].paint(inserting);
-
                 ActiveForm.Invalidate();
             }
             public void focusOnClick(Graphics ellipses, int x_mouse, int y_mouse, bool ctrl)
@@ -256,6 +253,9 @@ namespace OopLab4
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
+            ellipses = CreateGraphics();
+            ellipses2 = CreateGraphics();
+
             if (storage.getCount() != 0)
                 if (environment == false)
                     storage.paint(ellipses);
@@ -295,15 +295,9 @@ namespace OopLab4
             if (e.KeyCode == Keys.Delete)
             {
                 if (environment == false)
-                {
                     storage.removeFocused(ellipses, ellipses2);
-                    ellipses = CreateGraphics();
-                }
                 else
-                {
                     storage.removeFocused(ellipses2, ellipses);
-                    ellipses2 = CreateGraphics();
-                }
                 if (environment == false)
                     environment = true;
                 else
