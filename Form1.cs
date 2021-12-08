@@ -104,7 +104,7 @@ namespace OopLab4
             protected int size;
             protected int count;
 
-            public void remove()
+            public void remove()                            // removes all nulled elements
             {
                 int del = 0;
 
