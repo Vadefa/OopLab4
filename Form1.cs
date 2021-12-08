@@ -24,7 +24,7 @@ namespace OopLab4
             storage = new MyStorage();
 
             ctrl = false;
-    }
+        }
 
 
     public class CCircle
@@ -78,7 +78,7 @@ namespace OopLab4
                 int x1 = x + r * 2 + ((int)(defaultPen.Width / 2));
                 int y1 = y + r * 2 + ((int)(defaultPen.Width / 2));
 
-                if ((x_mouse > x0) && (x_mouse < x1) && (y_mouse > y0) && (y_mouse < y1))
+                if ((x_mouse >= x0) && (x_mouse <= x1) && (y_mouse >= y0) && (y_mouse <= y1))
                     return true;
                 else
                     return false;
