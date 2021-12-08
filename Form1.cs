@@ -223,6 +223,11 @@ namespace OopLab4
                 storage = new CCircle[size];
             }
         }
+
+        public class StorService: MyStorage
+        {
+
+        }
         // ended up for the storage and ccircle classes
 
 
