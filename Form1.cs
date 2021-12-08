@@ -168,8 +168,9 @@ namespace OopLab4
 
             public void paint(Graphics ellipses)
             {
-                foreach (CCircle circle in storage)
-                    circle.paint(ellipses);
+                if (count != 0)
+                    foreach (CCircle circle in storage)
+                        circle.paint(ellipses);
             }
             public int getCount()
             {
@@ -222,7 +223,7 @@ namespace OopLab4
                 storage = new CCircle[size];
             }
         }
-        // ended up for the storage and ccircle
+        // ended up for the storage and ccircle classes
 
 
 
@@ -230,8 +231,7 @@ namespace OopLab4
         {
             ellipses = CreateGraphics();
 
-            if (storage.getCount() != 0)
-                storage.paint(ellipses);
+            storage.paint(ellipses);
         }
 
         private void Form1_DoubleClick(object sender, EventArgs e)
@@ -246,8 +246,11 @@ namespace OopLab4
         {
             if (storage.getCount() != 0)
             {
-                Point mousePos = PointToClient(new Point(Cursor.Position.X, Cursor.Position.Y));
-                storage.focusOnClick(ellipses, mousePos.X, mousePos.Y, ctrl);
+                if (e.Button == MouseButtons.Left)
+                {
+                    Point mousePos = PointToClient(new Point(Cursor.Position.X, Cursor.Position.Y));
+                    storage.focusOnClick(ellipses, mousePos.X, mousePos.Y, ctrl);
+                }
             }
         }
 
