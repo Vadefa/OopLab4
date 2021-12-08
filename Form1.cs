@@ -104,9 +104,35 @@ namespace OopLab4
             protected int size;
             protected int count;
 
-            public void remove(Graphics paintForm)
+            public void remove()
             {
+                int del = 0;
 
+                for (int i = 0; i < size; i++)
+                    if (storage[i] == null)
+                        del = del + 1;
+
+
+                CCircle[] tempStorage = new CCircle[del];   // here we'll put elements that should remain
+
+                int j = 0;
+                for (int i = 0; i < size; i++)
+                    if (storage[i] != null)
+                    {
+                        tempStorage[j] = storage[i];        // putting remaining elements
+                        j = j + 1;
+                    }
+
+                size = del;                                 // changing properties
+                count = size;
+                iter = size;
+                if (iter < 0)
+                    iter = 0;
+
+
+                storage = new CCircle[size];
+                for (int i = 0; i < size; i++)
+                    storage[i] = tempStorage[i];            // moved all remained elements
             }
             private void sizeImprove()
             {
@@ -159,38 +185,13 @@ namespace OopLab4
         {
             public void removeFocused(Graphics paintForm)
             {
-                int del = 0;                                // number of elements we'll delete
                 for (int i = 0; i < size; i++)
                 {
-                    if (storage[i].focusCheck() != true)
-                        del = del + 1;
-                    else
+                    if (storage[i].focusCheck() == true)
                         storage[i] = null;                  // placing null in the storage at the elements we should delete
                 }
 
-
-                CCircle[] tempStorage = new CCircle[del];   // here we'll put elements that should remain
-
-
-                int j = 0;
-                for (int i = 0; i < size; i++)
-                    if (storage[i] != null)
-                    {
-                        tempStorage[j] = storage[i];        // putting remaining elements
-                        j = j + 1;
-                    }
-
-                size = del;                                 // changing properties
-                count = size;
-                iter = size;
-                if (iter < 0)
-                    iter = 0;
-
-
-                storage = new CCircle[size];
-                for (int i = 0; i < size; i++)
-                    storage[i] = tempStorage[i];            // moved all remained elements
-
+                remove();
 
                 //now at the form's paint event we won't draw elements those were focused. Let's make the form repaint it immediately.
                 ActiveForm.Invalidate();
