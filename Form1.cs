@@ -104,13 +104,10 @@ namespace OopLab4
             protected int size;
             protected int count;
 
-
-
-            public int getCount()
+            public void remove(Graphics paintForm)
             {
-                return count;
+
             }
-            
             private void sizeImprove()
             {
                 CCircle[] tempStorage = storage;
@@ -198,6 +195,8 @@ namespace OopLab4
                 //now at the form's paint event we won't draw elements those were focused. Let's make the form repaint it immediately.
                 ActiveForm.Invalidate();
             }
+
+
             public void focusOnClick(Graphics paintForm, int x_mouse, int y_mouse, bool ctrl)
             {
                 if (count == 0)
