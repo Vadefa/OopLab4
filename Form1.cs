@@ -65,7 +65,9 @@ namespace OopLab4
             public void unfocus()
             {
                 is_focused = false;
-                ActiveForm.Invalidate();
+                ActiveForm.Invalidate();        // ломает прогу, если ты работаешь через отладку.
+                                                // Почему? потому что ActiveForm = null, когда форма свёрнута/не в фокусе видимости
+                                                // а отладка почти всегда сворачивает прогу
             }
 
 
@@ -109,7 +111,7 @@ namespace OopLab4
                 int del = 0;
 
                 for (int i = 0; i < size; i++)
-                    if (storage[i] == null)
+                    if (storage[i] != null)
                         del = del + 1;
 
 
